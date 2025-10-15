@@ -1,58 +1,66 @@
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, Lock, TrendingUp } from "lucide-react";
+import { Users, Lock, TrendingUp, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import type { Tables } from "@/integrations/supabase/types";
+
+type Community = Tables<"communities">;
 
 export default function Communities() {
-  const communities = [
-    {
-      id: 1,
-      name: "Business Mastery Circle",
-      creator: "Amara Okafor",
-      members: 234,
-      price: "$9.99/month",
-      description: "Join a community of ambitious entrepreneurs learning to scale their African businesses.",
-      category: "Business"
-    },
-    {
-      id: 2,
-      name: "Content Creators Hub",
-      creator: "Kwame Mensah",
-      members: 456,
-      price: "$14.99/month",
-      description: "Connect with fellow content creators, share tips, and grow your audience together.",
-      category: "Lifestyle"
-    },
-    {
-      id: 3,
-      name: "Tech Innovators Network",
-      creator: "Zara Ibrahim",
-      members: 189,
-      price: "$19.99/month",
-      description: "For African tech entrepreneurs and developers building the future of technology.",
-      category: "Education"
-    },
-    {
-      id: 4,
-      name: "Financial Freedom Academy",
-      creator: "Oluwaseun Adebayo",
-      members: 567,
-      price: "$12.99/month",
-      description: "Learn investment strategies and financial planning tailored for African markets.",
-      category: "Business"
-    }
-  ];
+  const [communities, setCommunities] = useState<Community[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleJoin = (communityName: string) => {
-    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-    if (!isLoggedIn) {
+  useEffect(() => {
+    fetchCommunities();
+  }, []);
+
+  const fetchCommunities = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('communities')
+        .select('*')
+        .eq('is_public', true)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      setCommunities(data || []);
+    } catch (error) {
+      console.error('Error fetching communities:', error);
+      toast.error("Failed to load communities");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleJoin = async (communityId: string, communityName: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
       toast.error("Please login to join communities");
       return;
     }
-    toast.success(`Joined ${communityName}! Welcome to the community.`);
+
+    try {
+      const { error } = await supabase
+        .from('community_members')
+        .insert({
+          community_id: communityId,
+          user_id: user.id,
+        });
+
+      if (error) throw error;
+
+      toast.success(`Joined ${communityName}! Welcome to the community.`);
+    } catch (error) {
+      console.error('Error joining community:', error);
+      toast.error("Failed to join community");
+    }
   };
 
   return (
@@ -69,44 +77,71 @@ export default function Communities() {
           </div>
 
           {/* Communities Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {communities.map((community) => (
-              <Card key={community.id} className="p-6 shadow-custom-md hover:shadow-custom-lg transition-smooth">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-xl font-semibold mb-1">{community.name}</h3>
-                    <p className="text-sm text-muted-foreground">by {community.creator}</p>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+          ) : communities.length === 0 ? (
+            <Card className="p-12 text-center">
+              <p className="text-muted-foreground">
+                No communities yet. Be the first to create one!
+              </p>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {communities.map((community) => (
+                <Card 
+                  key={community.id} 
+                  className="p-6 shadow-custom-md hover:shadow-custom-lg transition-smooth"
+                  style={{ borderLeft: `4px solid ${community.theme_color}` }}
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 className="text-xl font-semibold mb-1">{community.name}</h3>
+                    </div>
+                    <Badge 
+                      variant="secondary"
+                      style={{ 
+                        backgroundColor: `${community.theme_color}20`,
+                        color: community.theme_color 
+                      }}
+                    >
+                      Community
+                    </Badge>
                   </div>
-                  <Badge variant="secondary">{community.category}</Badge>
-                </div>
 
-                <p className="text-muted-foreground mb-6">{community.description}</p>
+                  {community.description && (
+                    <p className="text-muted-foreground mb-6">{community.description}</p>
+                  )}
 
-                <div className="flex items-center gap-6 mb-6">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Users className="h-4 w-4" />
-                    <span className="text-sm">{community.members} members</span>
+                  <div className="flex items-center gap-6 mb-6">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Users className="h-4 w-4" />
+                      <span className="text-sm">{community.member_count} members</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Lock className="h-4 w-4" />
+                      <span className="text-sm">Exclusive content</span>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Lock className="h-4 w-4" />
-                    <span className="text-sm">Exclusive content</span>
-                  </div>
-                </div>
 
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-2xl font-bold text-primary">{community.price}</span>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-2xl font-bold text-primary">
+                        ${community.subscription_price}/mo
+                      </span>
+                    </div>
+                    <Button 
+                      variant="hero"
+                      onClick={() => handleJoin(community.id, community.name)}
+                    >
+                      Join Community
+                    </Button>
                   </div>
-                  <Button 
-                    variant="hero"
-                    onClick={() => handleJoin(community.name)}
-                  >
-                    Join Community
-                  </Button>
-                </div>
-              </Card>
-            ))}
-          </div>
+                </Card>
+              ))}
+            </div>
+          )}
 
           {/* Example Community Feed */}
           <div className="mt-12">

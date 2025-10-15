@@ -7,11 +7,14 @@ import { Button } from "@/components/ui/button";
 import { DollarSign, ShoppingBag, Users, TrendingUp, Upload, UserPlus } from "lucide-react";
 import { ProductUploadForm } from "@/components/ProductUploadForm";
 import { MyProducts } from "@/components/MyProducts";
+import { CommunityCustomizeForm } from "@/components/CommunityCustomizeForm";
+import { MyCommunities } from "@/components/MyCommunities";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const userName = localStorage.getItem("userName") || "Creator";
   const [showUploadForm, setShowUploadForm] = useState(false);
+  const [showCommunityForm, setShowCommunityForm] = useState(false);
 
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
@@ -77,7 +80,13 @@ export default function Dashboard() {
               <p className="text-muted-foreground mb-4">
                 Build a subscription-based community for your fans
               </p>
-              <Button variant="hero" className="w-full">Create Community</Button>
+              <Button 
+                variant="hero" 
+                className="w-full"
+                onClick={() => setShowCommunityForm(!showCommunityForm)}
+              >
+                {showCommunityForm ? "Hide Form" : "Create Community"}
+              </Button>
             </Card>
 
             <Card className="p-6 shadow-custom-md hover:shadow-custom-lg transition-smooth">
@@ -97,9 +106,21 @@ export default function Dashboard() {
             </div>
           )}
 
+          {/* Community Form */}
+          {showCommunityForm && (
+            <div className="mb-8">
+              <CommunityCustomizeForm onSuccess={() => setShowCommunityForm(false)} />
+            </div>
+          )}
+
           {/* My Products */}
           <div className="mb-8">
             <MyProducts />
+          </div>
+
+          {/* My Communities */}
+          <div className="mb-8">
+            <MyCommunities />
           </div>
 
           {/* Recent Activity */}
