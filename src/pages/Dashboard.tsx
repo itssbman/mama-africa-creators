@@ -1,14 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DollarSign, ShoppingBag, Users, TrendingUp, Upload, UserPlus } from "lucide-react";
+import { ProductUploadForm } from "@/components/ProductUploadForm";
+import { MyProducts } from "@/components/MyProducts";
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const userName = localStorage.getItem("userName") || "Creator";
+  const [showUploadForm, setShowUploadForm] = useState(false);
 
   useEffect(() => {
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
@@ -59,7 +62,13 @@ export default function Dashboard() {
               <p className="text-muted-foreground mb-4">
                 Add new ebooks, courses, or templates to your store
               </p>
-              <Button variant="hero" className="w-full">Upload Now</Button>
+              <Button 
+                variant="hero" 
+                className="w-full"
+                onClick={() => setShowUploadForm(!showUploadForm)}
+              >
+                {showUploadForm ? "Hide Upload" : "Upload Now"}
+              </Button>
             </Card>
 
             <Card className="p-6 shadow-custom-md hover:shadow-custom-lg transition-smooth">
@@ -79,6 +88,18 @@ export default function Dashboard() {
               </p>
               <Button variant="hero" className="w-full">View Subscribers</Button>
             </Card>
+          </div>
+
+          {/* Product Upload Form */}
+          {showUploadForm && (
+            <div className="mb-8">
+              <ProductUploadForm />
+            </div>
+          )}
+
+          {/* My Products */}
+          <div className="mb-8">
+            <MyProducts />
           </div>
 
           {/* Recent Activity */}
