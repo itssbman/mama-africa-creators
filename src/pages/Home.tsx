@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { Testimonials } from "@/components/Testimonials";
 import { ShoppingBag, Users, Heart, DollarSign, Globe, Shield } from "lucide-react";
 import heroImage from "@/assets/hero-african-creators.jpg";
 
@@ -93,6 +94,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Testimonials Section */}
+      <Testimonials />
 
       {/* CTA Section */}
       <section className="py-16 px-4 bg-secondary">
