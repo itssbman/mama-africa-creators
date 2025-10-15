@@ -14,7 +14,175 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      affiliate_commissions: {
+        Row: {
+          affiliate_id: string
+          commission_amount: number
+          commission_rate: number | null
+          created_at: string | null
+          id: string
+          status: string | null
+          transaction_id: string | null
+        }
+        Insert: {
+          affiliate_id: string
+          commission_amount: number
+          commission_rate?: number | null
+          created_at?: string | null
+          id?: string
+          status?: string | null
+          transaction_id?: string | null
+        }
+        Update: {
+          affiliate_id?: string
+          commission_amount?: number
+          commission_rate?: number | null
+          created_at?: string | null
+          id?: string
+          status?: string | null
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_commissions_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          creator_id: string
+          description: string | null
+          file_url: string | null
+          id: string
+          price: number
+          product_type: string
+          thumbnail_url: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          creator_id: string
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          price: number
+          product_type: string
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          creator_id?: string
+          description?: string | null
+          file_url?: string | null
+          id?: string
+          price?: number
+          product_type?: string
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      purchases: {
+        Row: {
+          id: string
+          product_id: string | null
+          purchased_at: string | null
+          transaction_id: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          product_id?: string | null
+          purchased_at?: string | null
+          transaction_id?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          product_id?: string | null
+          purchased_at?: string | null
+          transaction_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchases_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchases_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      transactions: {
+        Row: {
+          amount: number
+          buyer_id: string
+          card_type: string | null
+          created_at: string | null
+          currency: string | null
+          id: string
+          payment_method: string
+          payment_reference: string | null
+          payment_status: string | null
+          product_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          buyer_id: string
+          card_type?: string | null
+          created_at?: string | null
+          currency?: string | null
+          id?: string
+          payment_method: string
+          payment_reference?: string | null
+          payment_status?: string | null
+          product_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          buyer_id?: string
+          card_type?: string | null
+          created_at?: string | null
+          currency?: string | null
+          id?: string
+          payment_method?: string
+          payment_reference?: string | null
+          payment_status?: string | null
+          product_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
