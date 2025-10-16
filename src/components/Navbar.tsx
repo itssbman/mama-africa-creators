@@ -1,15 +1,28 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 export const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+  const [user, setUser] = useState<User | null>(null);
 
-  const handleLogout = () => {
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("userName");
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
     window.location.href = "/";
   };
 
@@ -32,7 +45,7 @@ export const Navbar = () => {
             <Link to="/communities" className="text-foreground hover:text-primary transition-smooth">
               Communities
             </Link>
-            {isLoggedIn && (
+            {user && (
               <>
                 <Link to="/dashboard" className="text-foreground hover:text-primary transition-smooth">
                   Dashboard
@@ -45,7 +58,7 @@ export const Navbar = () => {
           </div>
 
           <div className="hidden md:flex items-center gap-3">
-            {isLoggedIn ? (
+            {user ? (
               <Button onClick={handleLogout} variant="outline" size="sm">
                 Logout
               </Button>
@@ -92,7 +105,7 @@ export const Navbar = () => {
               >
                 Communities
               </Link>
-              {isLoggedIn && (
+              {user && (
                 <>
                   <Link
                     to="/dashboard"
@@ -111,7 +124,7 @@ export const Navbar = () => {
                 </>
               )}
               <div className="flex flex-col gap-2 pt-2">
-                {isLoggedIn ? (
+                {user ? (
                   <Button onClick={handleLogout} variant="outline" size="sm">
                     Logout
                   </Button>

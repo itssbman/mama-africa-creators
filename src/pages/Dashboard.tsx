@@ -9,18 +9,33 @@ import { ProductUploadForm } from "@/components/ProductUploadForm";
 import { MyProducts } from "@/components/MyProducts";
 import { CommunityCustomizeForm } from "@/components/CommunityCustomizeForm";
 import { MyCommunities } from "@/components/MyCommunities";
+import { supabase } from "@/integrations/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const userName = localStorage.getItem("userName") || "Creator";
+  const [user, setUser] = useState<User | null>(null);
   const [showUploadForm, setShowUploadForm] = useState(false);
   const [showCommunityForm, setShowCommunityForm] = useState(false);
 
   useEffect(() => {
-    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-    if (!isLoggedIn) {
-      navigate("/login");
-    }
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        navigate("/login");
+      } else {
+        setUser(session.user);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        navigate("/login");
+      } else {
+        setUser(session.user);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, [navigate]);
 
   const stats = [
@@ -37,7 +52,7 @@ export default function Dashboard() {
       <div className="flex-1 pt-24 pb-16 px-4">
         <div className="container mx-auto">
           <div className="mb-8">
-            <h1 className="mb-2">Welcome back, {userName}!</h1>
+            <h1 className="mb-2">Welcome back, {user?.user_metadata?.name || user?.email?.split('@')[0] || 'Creator'}!</h1>
             <p className="text-muted-foreground">Here's an overview of your creator performance</p>
           </div>
 

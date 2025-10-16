@@ -12,11 +12,8 @@ interface PaymentModalProps {
 
 export const PaymentModal = ({ isOpen, onClose, amount, productName }: PaymentModalProps) => {
   const handlePayment = (method: string) => {
-    toast.success(`Processing payment via ${method}...`);
-    setTimeout(() => {
-      toast.success("Payment successful!");
-      onClose();
-    }, 2000);
+    toast.error(`Payment integration not yet implemented. Please contact the creator directly.`);
+    onClose();
   };
 
   const paymentMethods = [

@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Navbar } from "@/components/Navbar";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -15,11 +16,11 @@ export default function Signup() {
     password: "",
     confirmPassword: ""
   });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validation
     if (!formData.name || !formData.email || !formData.password || !formData.confirmPassword) {
       toast.error("Please fill in all fields");
       return;
@@ -35,12 +36,34 @@ export default function Signup() {
       return;
     }
 
-    // Simulate signup
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("userName", formData.name);
-    
-    toast.success("Account created successfully!");
-    navigate("/dashboard");
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            name: formData.name,
+          }
+        }
+      });
+
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      if (data.user) {
+        toast.success("Account created successfully!");
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      toast.error("An error occurred during signup");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -103,8 +126,8 @@ export default function Signup() {
               />
             </div>
 
-            <Button type="submit" variant="hero" size="lg" className="w-full">
-              Create Account
+            <Button type="submit" variant="hero" size="lg" className="w-full" disabled={isLoading}>
+              {isLoading ? "Creating Account..." : "Create Account"}
             </Button>
           </form>
 

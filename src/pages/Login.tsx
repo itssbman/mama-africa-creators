@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Navbar } from "@/components/Navbar";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -13,22 +14,38 @@ export default function Login() {
     email: "",
     password: ""
   });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Simple validation
     if (!formData.email || !formData.password) {
       toast.error("Please fill in all fields");
       return;
     }
 
-    // Simulate login (in production, this would call an API)
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("userName", formData.email.split("@")[0]);
+    setIsLoading(true);
     
-    toast.success("Welcome back!");
-    navigate("/dashboard");
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+
+      if (data.user) {
+        toast.success("Welcome back!");
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      toast.error("An error occurred during login");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -67,8 +84,8 @@ export default function Login() {
               />
             </div>
 
-            <Button type="submit" variant="hero" size="lg" className="w-full">
-              Login
+            <Button type="submit" variant="hero" size="lg" className="w-full" disabled={isLoading}>
+              {isLoading ? "Logging in..." : "Login"}
             </Button>
           </form>
 
