@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DollarSign, ShoppingBag, Users, TrendingUp, Upload, UserPlus } from "lucide-react";
+import { DollarSign, ShoppingBag, Users, TrendingUp, Upload, UserPlus, BarChart, Settings, Eye } from "lucide-react";
 import { ProductUploadForm } from "@/components/ProductUploadForm";
 import { MyProducts } from "@/components/MyProducts";
 import { CommunityCustomizeForm } from "@/components/CommunityCustomizeForm";
@@ -110,7 +110,53 @@ export default function Dashboard() {
               <p className="text-muted-foreground mb-4">
                 View and engage with your subscriber base
               </p>
-              <Button variant="hero" className="w-full">View Subscribers</Button>
+              <Link to="/communities">
+                <Button variant="hero" className="w-full">View Subscribers</Button>
+              </Link>
+            </Card>
+          </div>
+
+          {/* Additional Quick Links */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <Link to="/marketplace" className="block">
+              <Card className="p-4 hover:shadow-custom-md transition-smooth cursor-pointer">
+                <div className="flex items-center gap-3">
+                  <Eye className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="font-semibold">Marketplace</p>
+                    <p className="text-xs text-muted-foreground">Browse products</p>
+                  </div>
+                </div>
+              </Card>
+            </Link>
+            <Link to="/affiliate" className="block">
+              <Card className="p-4 hover:shadow-custom-md transition-smooth cursor-pointer">
+                <div className="flex items-center gap-3">
+                  <BarChart className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="font-semibold">Affiliate</p>
+                    <p className="text-xs text-muted-foreground">View earnings</p>
+                  </div>
+                </div>
+              </Card>
+            </Link>
+            <Card className="p-4 hover:shadow-custom-md transition-smooth cursor-pointer">
+              <div className="flex items-center gap-3">
+                <Settings className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="font-semibold">Settings</p>
+                  <p className="text-xs text-muted-foreground">Account settings</p>
+                </div>
+              </div>
+            </Card>
+            <Card className="p-4 hover:shadow-custom-md transition-smooth cursor-pointer">
+              <div className="flex items-center gap-3">
+                <TrendingUp className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="font-semibold">Analytics</p>
+                  <p className="text-xs text-muted-foreground">View reports</p>
+                </div>
+              </div>
             </Card>
           </div>
 
