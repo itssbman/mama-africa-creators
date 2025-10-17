@@ -65,7 +65,7 @@ export const Navbar = () => {
                         Affiliate
                       </NavigationMenuTrigger>
                       <NavigationMenuContent>
-                        <div className="grid gap-3 p-6 w-[400px] md:w-[500px] lg:w-[600px] md:grid-cols-2">
+                        <div className="grid gap-3 p-6 w-[400px] md:w-[500px] lg:w-[600px] md:grid-cols-2 max-h-[500px] overflow-y-auto">
                           <Link to="/affiliate" className="group block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
                             <div className="flex items-center gap-2">
                               <TrendingUp className="h-4 w-4 text-primary" />
