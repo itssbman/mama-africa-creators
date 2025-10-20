@@ -23,7 +23,22 @@ export function ProductUploadForm() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
+      const selectedFile = e.target.files[0];
+      const maxSize = 15 * 1024 * 1024; // 15MB in bytes
+      
+      if (selectedFile.size > maxSize) {
+        toast({
+          title: "File too large",
+          description: "Please select a file smaller than 15MB",
+          variant: "destructive",
+        });
+        // Clear the file input
+        e.target.value = '';
+        setFile(null);
+        return;
+      }
+      
+      setFile(selectedFile);
     }
   };
 
