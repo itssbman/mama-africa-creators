@@ -128,7 +128,7 @@ export default function Communities() {
                   <div className="flex items-center justify-between">
                     <div>
                       <span className="text-2xl font-bold text-primary">
-                        ${community.subscription_price}/mo
+                        ₦{community.subscription_price}/mo
                       </span>
                     </div>
                     <Button 

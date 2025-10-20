@@ -107,7 +107,7 @@ export function MyProducts() {
             
             <div className="flex items-center justify-between mb-3">
               <span className="text-xl font-bold text-primary">
-                ${product.price}
+                ₦{product.price}
               </span>
               <span className="text-xs bg-accent/10 text-accent-foreground px-2 py-1 rounded">
                 {product.product_type}

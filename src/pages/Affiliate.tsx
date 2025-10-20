@@ -43,7 +43,7 @@ export default function Affiliate() {
   const stats = [
     { label: "Total Clicks", value: "1,234", icon: <MousePointerClick className="h-6 w-6" /> },
     { label: "Signups", value: "45", icon: <Users className="h-6 w-6" /> },
-    { label: "Commission Earned", value: "$562.50", icon: <DollarSign className="h-6 w-6" /> }
+    { label: "Commission Earned", value: "₦562.50", icon: <DollarSign className="h-6 w-6" /> }
   ];
 
   return (
@@ -138,9 +138,9 @@ export default function Affiliate() {
             <h3 className="text-xl font-semibold mb-4">Recent Referrals</h3>
             <div className="space-y-4">
               {[
-                { name: "Sarah M.", date: "2 days ago", status: "Active", commission: "$12.50" },
-                { name: "John K.", date: "5 days ago", status: "Active", commission: "$18.75" },
-                { name: "Mary O.", date: "1 week ago", status: "Pending", commission: "$0.00" }
+                { name: "Sarah M.", date: "2 days ago", status: "Active", commission: "₦12.50" },
+                { name: "John K.", date: "5 days ago", status: "Active", commission: "₦18.75" },
+                { name: "Mary O.", date: "1 week ago", status: "Pending", commission: "₦0.00" }
               ].map((referral, index) => (
                 <div key={index} className="flex items-center justify-between p-4 bg-secondary rounded-lg">
                   <div>

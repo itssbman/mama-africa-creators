@@ -135,7 +135,7 @@ export function CommunityCustomizeForm({ community, onSuccess }: CommunityCustom
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <Label htmlFor="price">Monthly Subscription Price ($)</Label>
+            <Label htmlFor="price">Monthly Subscription Price (₦)</Label>
             <Input
               id="price"
               type="number"

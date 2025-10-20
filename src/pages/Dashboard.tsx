@@ -39,7 +39,7 @@ export default function Dashboard() {
   }, [navigate]);
 
   const stats = [
-    { label: "Total Earnings", value: "$2,450.00", icon: <DollarSign className="h-6 w-6" />, change: "+12.5%" },
+    { label: "Total Earnings", value: "₦2,450.00", icon: <DollarSign className="h-6 w-6" />, change: "+12.5%" },
     { label: "Products Sold", value: "156", icon: <ShoppingBag className="h-6 w-6" />, change: "+8.2%" },
     { label: "Subscribers", value: "89", icon: <Users className="h-6 w-6" />, change: "+15.3%" },
     { label: "Growth Rate", value: "24%", icon: <TrendingUp className="h-6 w-6" />, change: "+5.1%" }
@@ -191,7 +191,7 @@ export default function Dashboard() {
               {[
                 { action: "New subscriber", detail: "Sarah joined your Business Mastery community", time: "2 hours ago" },
                 { action: "Product sold", detail: "African Business eBook purchased", time: "5 hours ago" },
-                { action: "Tip received", detail: "$25 tip from John Doe", time: "1 day ago" },
+                { action: "Tip received", detail: "₦25 tip from John Doe", time: "1 day ago" },
                 { action: "New subscriber", detail: "Michael joined your community", time: "2 days ago" }
               ].map((activity, index) => (
                 <div key={index} className="flex items-start gap-4 pb-4 border-b last:border-b-0">

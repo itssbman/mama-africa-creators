@@ -19,7 +19,7 @@ export default function Marketplace() {
     {
       id: 1,
       title: "African Business Mastery",
-      price: "$29.99",
+      price: "₦29.99",
       category: "Business",
       image: productEbook,
       creator: "Amara Okafor",
@@ -28,7 +28,7 @@ export default function Marketplace() {
     {
       id: 2,
       title: "Entrepreneurship Course",
-      price: "$79.99",
+      price: "₦79.99",
       category: "Education",
       image: productCourse,
       creator: "Kwame Mensah",
@@ -37,7 +37,7 @@ export default function Marketplace() {
     {
       id: 3,
       title: "Business Plan Templates",
-      price: "$19.99",
+      price: "₦19.99",
       category: "Business",
       image: productTemplate,
       creator: "Zara Ibrahim",
@@ -46,7 +46,7 @@ export default function Marketplace() {
     {
       id: 4,
       title: "Marketing Strategy Guide",
-      price: "$39.99",
+      price: "₦39.99",
       category: "Business",
       image: productEbook,
       creator: "Oluwaseun Adebayo",
@@ -55,7 +55,7 @@ export default function Marketplace() {
     {
       id: 5,
       title: "Digital Content Creation",
-      price: "$59.99",
+      price: "₦59.99",
       category: "Lifestyle",
       image: productCourse,
       creator: "Fatima Hassan",
@@ -64,7 +64,7 @@ export default function Marketplace() {
     {
       id: 6,
       title: "Financial Planning Toolkit",
-      price: "$24.99",
+      price: "₦24.99",
       category: "Business",
       image: productTemplate,
       creator: "Thabo Nkosi",

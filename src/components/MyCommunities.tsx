@@ -134,7 +134,7 @@ export function MyCommunities() {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <span className="text-2xl font-bold text-primary">
-                  ${community.subscription_price}/mo
+                  ₦{community.subscription_price}/mo
                 </span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
