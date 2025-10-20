@@ -9,7 +9,7 @@ export const Footer = () => {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <Sparkles className="h-6 w-6 text-accent" />
-              <span className="text-xl font-bold">AfriCreate</span>
+              <span className="text-xl font-bold">HYBRRID</span>
             </div>
             <p className="text-primary-foreground/80 text-sm">
               Empowering African creators to monetize locally and globally.
@@ -78,7 +78,7 @@ export const Footer = () => {
         </div>
 
         <div className="border-t border-primary-foreground/20 mt-8 pt-8 text-center text-sm text-primary-foreground/60">
-          <p>&copy; 2025 AfriCreate. All rights reserved.</p>
+          <p>&copy; 2025 HYBRRID. All rights reserved.</p>
         </div>
       </div>
     </footer>

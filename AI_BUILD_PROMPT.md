@@ -1,9 +1,9 @@
-# AfriCreate - Complete Build Prompt
+# HYBRRID - Complete Build Prompt
 
-Build a comprehensive digital marketplace platform for African creators called "AfriCreate" with the following specifications:
+Build a comprehensive digital marketplace platform for African creators called "HYBRRID" with the following specifications:
 
 ## Project Overview
-AfriCreate is an African-first digital marketplace empowering creators, educators, and coaches to monetize their expertise globally. The platform enables selling digital products, building subscription communities, and receiving fan support with local African payment options.
+HYBRRID is an African-first digital marketplace empowering creators, educators, and coaches to monetize their expertise globally. The platform enables selling digital products, building subscription communities, and receiving fan support with local African payment options.
 
 ## Technology Stack
 - **Frontend**: React 18 + TypeScript + Vite
@@ -328,7 +328,7 @@ Create triggers on products and communities tables to automatically update `upda
 
 ### Meta Tags (in index.html):
 ```html
-- Title: "AfriCreate - Empowering African Creators to Monetize Globally"
+- Title: "HYBRRID - Empowering African Creators to Monetize Globally"
 - Description: "African-first digital marketplace for creators..."
 - Keywords: "African creators, digital marketplace, online courses..."
 - OG tags for social sharing
