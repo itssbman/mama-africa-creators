@@ -74,13 +74,13 @@ Deno.serve(async (req) => {
     const { error: txError } = await supabase
       .from('transactions')
       .insert({
-        user_id: user.id,
+        buyer_id: user.id,
         product_id: productId,
         amount,
         currency: 'NGN',
         payment_method: 'paystack',
         payment_reference: paystackData.data.reference,
-        status: 'pending',
+        payment_status: 'pending',
       });
 
     if (txError) {
