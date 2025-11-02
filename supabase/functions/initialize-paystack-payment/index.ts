@@ -44,6 +44,10 @@ Deno.serve(async (req) => {
 
     console.log('Initializing Paystack payment:', { amount, email, productId });
 
+    // Validate if productId is a valid UUID (for real products from DB)
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const isValidUUID = productId && uuidRegex.test(productId);
+
     // Initialize Paystack transaction
     const paystackResponse = await fetch('https://api.paystack.co/transaction/initialize', {
       method: 'POST',
@@ -70,18 +74,24 @@ Deno.serve(async (req) => {
       throw new Error(paystackData.message || 'Failed to initialize payment');
     }
 
-    // Store transaction in database
+    // Store transaction in database (only include product_id if it's a valid UUID)
+    const transactionData: any = {
+      buyer_id: user.id,
+      amount,
+      currency: 'NGN',
+      payment_method: 'paystack',
+      payment_reference: paystackData.data.reference,
+      payment_status: 'pending',
+    };
+
+    // Only add product_id if it's a valid UUID (real product from database)
+    if (isValidUUID) {
+      transactionData.product_id = productId;
+    }
+
     const { error: txError } = await supabase
       .from('transactions')
-      .insert({
-        buyer_id: user.id,
-        product_id: productId,
-        amount,
-        currency: 'NGN',
-        payment_method: 'paystack',
-        payment_reference: paystackData.data.reference,
-        payment_status: 'pending',
-      });
+      .insert(transactionData);
 
     if (txError) {
       console.error('Failed to store transaction:', txError);
