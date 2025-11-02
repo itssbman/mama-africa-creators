@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Search, ShoppingCart } from "lucide-react";
-import { toast } from "sonner";
+import { PaymentModal } from "@/components/PaymentModal";
 import productEbook from "@/assets/product-ebook.jpg";
 import productCourse from "@/assets/product-course.jpg";
 import productTemplate from "@/assets/product-template.jpg";
@@ -14,6 +14,8 @@ import productTemplate from "@/assets/product-template.jpg";
 export default function Marketplace() {
   const [category, setCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<{ id: string; title: string; price: string } | null>(null);
 
   const products = [
     {
@@ -79,8 +81,13 @@ export default function Marketplace() {
     return matchesCategory && matchesSearch;
   });
 
-  const handlePurchase = (productTitle: string) => {
-    toast.success(`Added "${productTitle}" to cart!`);
+  const handlePurchase = (product: { id: number; title: string; price: string }) => {
+    setSelectedProduct({
+      id: product.id.toString(),
+      title: product.title,
+      price: product.price
+    });
+    setIsPaymentModalOpen(true);
   };
 
   return (
@@ -143,7 +150,7 @@ export default function Marketplace() {
                     <Button 
                       variant="hero" 
                       size="sm"
-                      onClick={() => handlePurchase(product.title)}
+                      onClick={() => handlePurchase(product)}
                     >
                       <ShoppingCart className="h-4 w-4 mr-2" />
                       Buy Now
@@ -163,6 +170,19 @@ export default function Marketplace() {
       </div>
 
       <Footer />
+      
+      {selectedProduct && (
+        <PaymentModal
+          isOpen={isPaymentModalOpen}
+          onClose={() => {
+            setIsPaymentModalOpen(false);
+            setSelectedProduct(null);
+          }}
+          amount={selectedProduct.price}
+          productName={selectedProduct.title}
+          productId={selectedProduct.id}
+        />
+      )}
     </div>
   );
 }
