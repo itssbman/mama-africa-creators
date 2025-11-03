@@ -64,14 +64,12 @@ export default function Home() {
               and fan support designed for African creators.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/signup">
-                <Button variant="gold" size="lg">
-                  Join as Creator
-                </Button>
-              </Link>
-              <Link to="/marketplace">
+              <Button variant="gold" size="lg">
+                Join as Creator
+              </Button>
+              <Link to="/communities">
                 <Button variant="outline" size="lg" className="bg-background/10 backdrop-blur-sm border-primary-foreground text-primary-foreground hover:bg-background/20">
-                  Explore Creators
+                  Explore Communities
                 </Button>
               </Link>
             </div>
@@ -105,11 +103,9 @@ export default function Home() {
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             Join thousands of African creators already monetizing their passion and expertise.
           </p>
-          <Link to="/signup">
-            <Button variant="hero" size="lg">
-              Get Started Today
-            </Button>
-          </Link>
+          <Button variant="hero" size="lg">
+            Get Started Today
+          </Button>
         </div>
       </section>
 

@@ -38,29 +38,8 @@ export default function Communities() {
     }
   };
 
-  const handleJoin = async (communityId: string, communityName: string) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      toast.error("Please login to join communities");
-      return;
-    }
-
-    try {
-      const { error } = await supabase
-        .from('community_members')
-        .insert({
-          community_id: communityId,
-          user_id: user.id,
-        });
-
-      if (error) throw error;
-
-      toast.success(`Joined ${communityName}! Welcome to the community.`);
-    } catch (error) {
-      console.error('Error joining community:', error);
-      toast.error("Failed to join community");
-    }
+  const handleJoin = (communityName: string) => {
+    toast.success(`Interest noted for ${communityName}! Sign up to join this community.`);
   };
 
   return (
@@ -133,7 +112,7 @@ export default function Communities() {
                     </div>
                     <Button 
                       variant="hero"
-                      onClick={() => handleJoin(community.id, community.name)}
+                      onClick={() => handleJoin(community.name)}
                     >
                       Join Community
                     </Button>
