@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Navbar } from "@/components/Navbar";
@@ -8,6 +8,8 @@ import { ShoppingBag, Users, Heart, DollarSign, Globe, Shield } from "lucide-rea
 import heroImage from "@/assets/hero-african-creators.jpg";
 
 export default function Home() {
+  const navigate = useNavigate();
+
   const benefits = [
     {
       icon: <ShoppingBag className="h-8 w-8 text-accent" />,
@@ -64,12 +66,13 @@ export default function Home() {
               and fan support designed for African creators.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button variant="gold" size="lg">
+              <Button variant="gold" size="lg" onClick={() => navigate("/signup")}>
                 Join as Creator
               </Button>
-              <Link to="/communities">
+              <Link to="/marketplace">
                 <Button variant="outline" size="lg" className="bg-background/10 backdrop-blur-sm border-primary-foreground text-primary-foreground hover:bg-background/20">
-                  Explore Communities
+                  <ShoppingBag className="mr-2 h-5 w-5" />
+                  Browse Marketplace
                 </Button>
               </Link>
             </div>
@@ -103,7 +106,7 @@ export default function Home() {
           <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
             Join thousands of African creators already monetizing their passion and expertise.
           </p>
-          <Button variant="hero" size="lg">
+          <Button variant="hero" size="lg" onClick={() => navigate("/signup")}>
             Get Started Today
           </Button>
         </div>

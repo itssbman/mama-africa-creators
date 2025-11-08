@@ -5,9 +5,39 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Share2, Copy, DollarSign, Users, MousePointerClick } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Affiliate() {
-  const referralLink = "https://africreate.com/ref/YOUR-CODE";
+  const navigate = useNavigate();
+  const [user, setUser] = useState<any>(null);
+  const [referralLink, setReferralLink] = useState("");
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate("/login");
+      } else {
+        setUser(user);
+        setReferralLink(`https://hybrrid.com/ref/${user.id.slice(0, 8)}`);
+      }
+    };
+
+    checkUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session?.user) {
+        navigate("/login");
+      } else {
+        setUser(session.user);
+        setReferralLink(`https://hybrrid.com/ref/${session.user.id.slice(0, 8)}`);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralLink);

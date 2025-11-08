@@ -7,11 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Users, Lock, TrendingUp, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Community = Tables<"communities">;
 
 export default function Communities() {
+  const navigate = useNavigate();
   const [communities, setCommunities] = useState<Community[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -38,8 +40,33 @@ export default function Communities() {
     }
   };
 
-  const handleJoin = (communityName: string) => {
-    toast.success(`Interest noted for ${communityName}! Sign up to join this community.`);
+  const handleJoin = async (communityId: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      toast.error("Please login to join communities");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from("community_members")
+        .insert({
+          community_id: communityId,
+          user_id: user.id,
+        });
+
+      if (error) throw error;
+      toast.success("Successfully joined community!");
+      fetchCommunities();
+    } catch (error: any) {
+      if (error.code === "23505") {
+        toast.info("You're already a member of this community");
+      } else {
+        toast.error("Failed to join community");
+      }
+    }
   };
 
   return (
@@ -112,7 +139,7 @@ export default function Communities() {
                     </div>
                     <Button 
                       variant="hero"
-                      onClick={() => handleJoin(community.name)}
+                      onClick={() => handleJoin(community.id)}
                     >
                       Join Community
                     </Button>
