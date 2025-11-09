@@ -134,7 +134,9 @@ const Marketplace = () => {
 
         {filteredProducts.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">No products found</p>
+            <p className="text-muted-foreground">
+              {products.length === 0 ? "No products yet." : "No products found"}
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
