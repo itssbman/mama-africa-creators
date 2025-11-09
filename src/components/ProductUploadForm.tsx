@@ -177,7 +177,7 @@ const ProductUploadForm = ({ onSuccess }: ProductUploadFormProps) => {
                   <SelectItem value="ebook">E-book</SelectItem>
                   <SelectItem value="course">Course</SelectItem>
                   <SelectItem value="template">Template</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="document">Document</SelectItem>
                 </SelectContent>
               </Select>
             </div>
