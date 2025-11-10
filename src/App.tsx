@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Marketplace from "./pages/Marketplace";
+import Admin from "./pages/Admin";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => {
             <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/communities" element={<Communities />} />
             <Route path="/affiliate" element={<Affiliate />} />
+            <Route path="/admin" element={<Admin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -10,18 +10,38 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user);
+      if (user) {
+        checkAdminRole(user.id);
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      if (session?.user) {
+        checkAdminRole(session.user.id);
+      } else {
+        setIsAdmin(false);
+      }
     });
 
     return () => subscription.unsubscribe();
   }, []);
+
+  const checkAdminRole = async (userId: string) => {
+    const { data } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .single();
+    
+    setIsAdmin(!!data);
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -54,6 +74,11 @@ export const Navbar = () => {
             {user && (
               <Link to="/dashboard" className="text-foreground hover:text-primary transition-smooth">
                 Dashboard
+              </Link>
+            )}
+            {isAdmin && (
+              <Link to="/admin" className="text-accent hover:text-accent-light transition-smooth font-semibold">
+                Admin
               </Link>
             )}
           </div>
@@ -117,6 +142,15 @@ export const Navbar = () => {
                   onClick={() => setIsMenuOpen(false)}
                 >
                   Dashboard
+                </Link>
+              )}
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className="text-accent hover:text-accent-light transition-smooth font-semibold"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Admin
                 </Link>
               )}
               <div className="flex flex-col gap-2 pt-2 border-t">
