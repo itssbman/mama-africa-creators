@@ -8,9 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Trash2, Search, Shield, AlertCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ModerationQueue } from "@/components/ModerationQueue";
 
 interface Product {
   id: string;
@@ -178,91 +180,105 @@ const Admin = () => {
             </CardContent>
           </Card>
 
-          <div className="relative mb-6">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search products by title or category..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>All Products</CardTitle>
-            <CardDescription>
-              {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} found
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {filteredProducts.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground">
-                  {products.length === 0 ? "No products yet." : "No products found"}
-                </p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Product</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Price</TableHead>
-                      <TableHead>Created</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredProducts.map((product) => (
-                      <TableRow key={product.id}>
-                        <TableCell>
-                          <div className="flex items-center gap-3">
-                            {product.thumbnail_url && (
-                              <img
-                                src={product.thumbnail_url}
-                                alt={product.title}
-                                className="w-12 h-12 rounded object-cover"
-                              />
-                            )}
-                            <div>
-                              <p className="font-medium">{product.title}</p>
-                              <p className="text-sm text-muted-foreground line-clamp-1">
-                                {product.description}
-                              </p>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="secondary">{product.product_type}</Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline">{product.category || "N/A"}</Badge>
-                        </TableCell>
-                        <TableCell>₦{product.price.toLocaleString()}</TableCell>
-                        <TableCell>
-                          {new Date(product.created_at).toLocaleDateString()}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => handleDelete(product.id, product.title)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <Tabs defaultValue="all" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="all">All Products</TabsTrigger>
+            <TabsTrigger value="moderation">Moderation Queue</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="all">
+            <div className="relative mb-6">
+              <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search products by title or category..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>All Products</CardTitle>
+                <CardDescription>
+                  {filteredProducts.length} product{filteredProducts.length !== 1 ? 's' : ''} found
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {filteredProducts.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-muted-foreground">
+                      {products.length === 0 ? "No products yet." : "No products found"}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Product</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Category</TableHead>
+                          <TableHead>Price</TableHead>
+                          <TableHead>Created</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {filteredProducts.map((product) => (
+                          <TableRow key={product.id}>
+                            <TableCell>
+                              <div className="flex items-center gap-3">
+                                {product.thumbnail_url && (
+                                  <img
+                                    src={product.thumbnail_url}
+                                    alt={product.title}
+                                    className="w-12 h-12 rounded object-cover"
+                                  />
+                                )}
+                                <div>
+                                  <p className="font-medium">{product.title}</p>
+                                  <p className="text-sm text-muted-foreground line-clamp-1">
+                                    {product.description}
+                                  </p>
+                                </div>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="secondary">{product.product_type}</Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline">{product.category || "N/A"}</Badge>
+                            </TableCell>
+                            <TableCell>₦{product.price.toLocaleString()}</TableCell>
+                            <TableCell>
+                              {new Date(product.created_at).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => handleDelete(product.id, product.title)}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="moderation">
+            <ModerationQueue />
+          </TabsContent>
+        </Tabs>
       </main>
       <Footer />
     </div>

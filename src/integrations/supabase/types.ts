@@ -136,9 +136,15 @@ export type Database = {
           creator_id: string
           description: string | null
           file_url: string | null
+          flag_reason: string | null
+          flagged_at: string | null
+          flagged_by: string | null
           id: string
           price: number
           product_type: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
           thumbnail_url: string | null
           title: string
           updated_at: string | null
@@ -149,9 +155,15 @@ export type Database = {
           creator_id: string
           description?: string | null
           file_url?: string | null
+          flag_reason?: string | null
+          flagged_at?: string | null
+          flagged_by?: string | null
           id?: string
           price: number
           product_type: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
           thumbnail_url?: string | null
           title: string
           updated_at?: string | null
@@ -162,9 +174,15 @@ export type Database = {
           creator_id?: string
           description?: string | null
           file_url?: string | null
+          flag_reason?: string | null
+          flagged_at?: string | null
+          flagged_by?: string | null
           id?: string
           price?: number
           product_type?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
           thumbnail_url?: string | null
           title?: string
           updated_at?: string | null
