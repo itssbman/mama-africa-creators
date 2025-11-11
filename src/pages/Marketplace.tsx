@@ -7,9 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ShoppingCart, Search, Filter } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { ShoppingCart, Search, Filter, Flag } from "lucide-react";
 import { toast } from "sonner";
 import PaymentModal from "@/components/PaymentModal";
+import { z } from "zod";
 
 interface Product {
   id: string;
@@ -22,6 +26,13 @@ interface Product {
   creator_id: string;
 }
 
+const flagReasonSchema = z.object({
+  reason: z.string()
+    .trim()
+    .min(10, { message: "Reason must be at least 10 characters" })
+    .max(500, { message: "Reason must be less than 500 characters" })
+});
+
 const Marketplace = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -30,6 +41,10 @@ const Marketplace = () => {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showFlagDialog, setShowFlagDialog] = useState(false);
+  const [flaggedProduct, setFlaggedProduct] = useState<Product | null>(null);
+  const [flagReason, setFlagReason] = useState("");
+  const [submittingFlag, setSubmittingFlag] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -83,6 +98,65 @@ const Marketplace = () => {
 
     setSelectedProduct(product);
     setShowPaymentModal(true);
+  };
+
+  const handleFlagClick = async (product: Product) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      toast.error("Please login to report products");
+      return;
+    }
+
+    setFlaggedProduct(product);
+    setFlagReason("");
+    setShowFlagDialog(true);
+  };
+
+  const handleSubmitFlag = async () => {
+    if (!flaggedProduct) return;
+
+    try {
+      // Validate the flag reason
+      const validation = flagReasonSchema.safeParse({ reason: flagReason });
+      
+      if (!validation.success) {
+        toast.error(validation.error.errors[0].message);
+        return;
+      }
+
+      setSubmittingFlag(true);
+
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast.error("Please login to report products");
+        return;
+      }
+
+      const { error } = await supabase
+        .from("products")
+        .update({
+          status: "flagged",
+          flag_reason: flagReason.trim(),
+          flagged_by: user.id,
+          flagged_at: new Date().toISOString()
+        })
+        .eq("id", flaggedProduct.id);
+
+      if (error) throw error;
+
+      toast.success("Product reported successfully. Admins will review it.");
+      setShowFlagDialog(false);
+      setFlaggedProduct(null);
+      setFlagReason("");
+      fetchProducts(); // Refresh the products list
+    } catch (error: any) {
+      console.error("Error flagging product:", error);
+      toast.error("Failed to report product");
+    } finally {
+      setSubmittingFlag(false);
+    }
   };
 
   const categories = [...new Set(products.map((p) => p.category).filter(Boolean))];
@@ -168,13 +242,21 @@ const Marketplace = () => {
                   )}
                   <p className="text-2xl font-bold">₦{product.price.toLocaleString()}</p>
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="flex gap-2">
                   <Button
-                    className="w-full"
+                    className="flex-1"
                     onClick={() => handlePurchase(product)}
                   >
                     <ShoppingCart className="mr-2 h-4 w-4" />
                     Purchase
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handleFlagClick(product)}
+                    title="Report this product"
+                  >
+                    <Flag className="h-4 w-4" />
                   </Button>
                 </CardFooter>
               </Card>
@@ -191,6 +273,53 @@ const Marketplace = () => {
           product={selectedProduct}
         />
       )}
+
+      <Dialog open={showFlagDialog} onOpenChange={setShowFlagDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Report Product</DialogTitle>
+            <DialogDescription>
+              Please provide a reason for reporting this product. Our admins will review your report.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            {flaggedProduct && (
+              <div className="text-sm">
+                <p className="font-medium">Product: {flaggedProduct.title}</p>
+              </div>
+            )}
+            <div className="space-y-2">
+              <Label htmlFor="flag-reason">Reason for reporting *</Label>
+              <Textarea
+                id="flag-reason"
+                placeholder="Please describe why you're reporting this product (minimum 10 characters)..."
+                value={flagReason}
+                onChange={(e) => setFlagReason(e.target.value)}
+                rows={4}
+                maxLength={500}
+              />
+              <p className="text-xs text-muted-foreground">
+                {flagReason.length}/500 characters
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowFlagDialog(false)}
+              disabled={submittingFlag}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSubmitFlag}
+              disabled={submittingFlag || flagReason.trim().length < 10}
+            >
+              {submittingFlag ? "Submitting..." : "Submit Report"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
