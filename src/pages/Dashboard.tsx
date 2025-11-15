@@ -7,6 +7,7 @@ import { Footer } from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MyProducts from "@/components/MyProducts";
 import MyCommunities from "@/components/MyCommunities";
+import MyFlaggedReports from "@/components/MyFlaggedReports";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart3, Package, Users } from "lucide-react";
 
@@ -93,12 +94,16 @@ const Dashboard = () => {
           <TabsList>
             <TabsTrigger value="products">My Products</TabsTrigger>
             <TabsTrigger value="communities">My Communities</TabsTrigger>
+            <TabsTrigger value="flagged-reports">Flagged Reports</TabsTrigger>
           </TabsList>
           <TabsContent value="products">
             <MyProducts />
           </TabsContent>
           <TabsContent value="communities">
             <MyCommunities />
+          </TabsContent>
+          <TabsContent value="flagged-reports">
+            <MyFlaggedReports />
           </TabsContent>
         </Tabs>
       </main>
