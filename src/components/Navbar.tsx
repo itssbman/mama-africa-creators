@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Sparkles, LogOut } from "lucide-react";
+import { Menu, X, Sparkles, LogOut, ShoppingBag } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
@@ -72,9 +72,15 @@ export const Navbar = () => {
               Affiliate
             </Link>
             {user && (
-              <Link to="/dashboard" className="text-foreground hover:text-primary transition-smooth">
-                Dashboard
-              </Link>
+              <>
+                <Link to="/dashboard" className="text-foreground hover:text-primary transition-smooth">
+                  Dashboard
+                </Link>
+                <Link to="/orders" className="text-foreground hover:text-primary transition-smooth flex items-center gap-1">
+                  <ShoppingBag className="h-4 w-4" />
+                  Orders
+                </Link>
+              </>
             )}
             {isAdmin && (
               <Link to="/admin" className="text-accent hover:text-accent-light transition-smooth font-semibold">
@@ -136,13 +142,23 @@ export const Navbar = () => {
                 Affiliate
               </Link>
               {user && (
-                <Link
-                  to="/dashboard"
-                  className="text-foreground hover:text-primary transition-smooth"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Dashboard
-                </Link>
+                <>
+                  <Link
+                    to="/dashboard"
+                    className="text-foreground hover:text-primary transition-smooth"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/orders"
+                    className="text-foreground hover:text-primary transition-smooth flex items-center gap-1"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <ShoppingBag className="h-4 w-4" />
+                    Orders
+                  </Link>
+                </>
               )}
               {isAdmin && (
                 <Link
