@@ -10,9 +10,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { ShoppingCart, Search, Filter, Flag } from "lucide-react";
+import { ShoppingCart, Search, Filter, Flag, Star } from "lucide-react";
 import { toast } from "sonner";
 import PaymentModal from "@/components/PaymentModal";
+import { ProductReviews } from "@/components/ProductReviews";
+import { StarRating } from "@/components/StarRating";
 import { z } from "zod";
 
 interface Product {
@@ -24,6 +26,8 @@ interface Product {
   category: string;
   thumbnail_url: string;
   creator_id: string;
+  average_rating?: number;
+  review_count?: number;
 }
 
 const flagReasonSchema = z.object({
@@ -45,6 +49,8 @@ const Marketplace = () => {
   const [flaggedProduct, setFlaggedProduct] = useState<Product | null>(null);
   const [flagReason, setFlagReason] = useState("");
   const [submittingFlag, setSubmittingFlag] = useState(false);
+  const [showReviewsDialog, setShowReviewsDialog] = useState(false);
+  const [reviewProduct, setReviewProduct] = useState<Product | null>(null);
 
   useEffect(() => {
     fetchProducts();
@@ -62,7 +68,25 @@ const Marketplace = () => {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setProducts(data || []);
+
+      // Fetch average ratings for all products
+      const productsWithRatings = await Promise.all(
+        (data || []).map(async (product) => {
+          const { data: reviews } = await supabase
+            .from("reviews")
+            .select("rating")
+            .eq("product_id", product.id);
+
+          const reviewCount = reviews?.length || 0;
+          const averageRating = reviewCount > 0
+            ? reviews!.reduce((sum, r) => sum + r.rating, 0) / reviewCount
+            : 0;
+
+          return { ...product, average_rating: averageRating, review_count: reviewCount };
+        })
+      );
+
+      setProducts(productsWithRatings);
     } catch (error: any) {
       toast.error("Failed to load products");
     } finally {
@@ -111,6 +135,11 @@ const Marketplace = () => {
     setFlaggedProduct(product);
     setFlagReason("");
     setShowFlagDialog(true);
+  };
+
+  const handleViewReviews = (product: Product) => {
+    setReviewProduct(product);
+    setShowReviewsDialog(true);
   };
 
   const handleSubmitFlag = async () => {
@@ -235,11 +264,29 @@ const Marketplace = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  {product.category && (
-                    <Badge variant="outline" className="mb-2">
-                      {product.category}
-                    </Badge>
-                  )}
+                  <div className="flex items-center justify-between mb-2">
+                    {product.category && (
+                      <Badge variant="outline">
+                        {product.category}
+                      </Badge>
+                    )}
+                    <button
+                      onClick={() => handleViewReviews(product)}
+                      className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {product.review_count && product.review_count > 0 ? (
+                        <>
+                          <StarRating rating={Math.round(product.average_rating || 0)} size="sm" />
+                          <span>({product.review_count})</span>
+                        </>
+                      ) : (
+                        <span className="flex items-center gap-1">
+                          <Star className="h-3 w-3" />
+                          No reviews
+                        </span>
+                      )}
+                    </button>
+                  </div>
                   <p className="text-2xl font-bold">₦{product.price.toLocaleString()}</p>
                 </CardContent>
                 <CardFooter className="flex gap-2">
@@ -271,6 +318,15 @@ const Marketplace = () => {
           open={showPaymentModal}
           onOpenChange={setShowPaymentModal}
           product={selectedProduct}
+        />
+      )}
+
+      {reviewProduct && (
+        <ProductReviews
+          open={showReviewsDialog}
+          onOpenChange={setShowReviewsDialog}
+          productId={reviewProduct.id}
+          productTitle={reviewProduct.title}
         />
       )}
 
