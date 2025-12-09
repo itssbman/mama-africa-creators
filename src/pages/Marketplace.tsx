@@ -65,6 +65,7 @@ const Marketplace = () => {
       const { data, error } = await supabase
         .from("products")
         .select("*")
+        .eq("status", "approved")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
@@ -72,22 +73,27 @@ const Marketplace = () => {
       // Fetch average ratings for all products
       const productsWithRatings = await Promise.all(
         (data || []).map(async (product) => {
-          const { data: reviews } = await supabase
-            .from("reviews")
-            .select("rating")
-            .eq("product_id", product.id);
+          try {
+            const { data: reviews } = await supabase
+              .from("reviews")
+              .select("rating")
+              .eq("product_id", product.id);
 
-          const reviewCount = reviews?.length || 0;
-          const averageRating = reviewCount > 0
-            ? reviews!.reduce((sum, r) => sum + r.rating, 0) / reviewCount
-            : 0;
+            const reviewCount = reviews?.length || 0;
+            const averageRating = reviewCount > 0
+              ? reviews!.reduce((sum, r) => sum + r.rating, 0) / reviewCount
+              : 0;
 
-          return { ...product, average_rating: averageRating, review_count: reviewCount };
+            return { ...product, average_rating: averageRating, review_count: reviewCount };
+          } catch {
+            return { ...product, average_rating: 0, review_count: 0 };
+          }
         })
       );
 
       setProducts(productsWithRatings);
     } catch (error: any) {
+      console.error("Error fetching products:", error);
       toast.error("Failed to load products");
     } finally {
       setLoading(false);
