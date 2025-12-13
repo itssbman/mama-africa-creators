@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 import Marketplace from "./pages/Marketplace";
 import Admin from "./pages/Admin";
 import OrderHistory from "./pages/OrderHistory";
+import CommunityRoom from "./pages/CommunityRoom";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/communities" element={<Communities />} />
+            <Route path="/community/:id" element={<CommunityRoom />} />
             <Route path="/affiliate" element={<Affiliate />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="/orders" element={<OrderHistory />} />

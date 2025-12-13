@@ -139,9 +139,9 @@ export default function Communities() {
                     </div>
                     <Button 
                       variant="hero"
-                      onClick={() => handleJoin(community.id)}
+                      onClick={() => navigate(`/community/${community.id}`)}
                     >
-                      Join Community
+                      Enter Community
                     </Button>
                   </div>
                 </Card>
